@@ -1193,7 +1193,7 @@ print_decoded_insn (memaddr, info)
     {
       load_areg[dec_insn.regs[0]] = TRUE;
       load_hi_addr[dec_insn.regs[0]] = dec_insn.cexp[1] << 16;
-      expect_lea = TRUE;
+      expect_lea = FALSE;
       print_symbolic_address = FALSE;
     }
   else if (expect_lea
