@@ -128,6 +128,8 @@ static int last_discriminator;
 /* Discriminator of current block.  */
 static int discriminator;
 
+static int bb_index;
+
 /* Highest line number in current block.  */
 static int high_block_linenum;
 
@@ -2177,6 +2179,18 @@ final_scan_insn (rtx insn, FILE *file, int optimize_p ATTRIBUTE_UNUSED,
 	  break;
 
 	case NOTE_INSN_BASIC_BLOCK:
+      if (asm_out_file != NULL) {
+        edge e;
+        edge_iterator ei;
+        basic_block note_bb = NOTE_BASIC_BLOCK(insn);
+        tree func_name = DECL_ASSEMBLER_NAME (current_function_decl);
+        const char *f_name_str = IDENTIFIER_POINTER(func_name);
+
+        FOR_EACH_EDGE (e, ei, note_bb->succs) {
+            fprintf(asm_out_file, "# %s_BB%d -> %s_BB%d\n", f_name_str, note_bb->index, f_name_str, e->dest->index);
+        }
+        fprintf(asm_out_file, ".%s_BB%d:\n", f_name_str, note_bb->index);
+      }
 	  if (need_profile_function)
 	    {
 	      profile_function (asm_out_file);
